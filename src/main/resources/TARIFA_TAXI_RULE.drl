@@ -1,0 +1,54 @@
+import br.droolsexample.model.CorridaTaxi;
+import br.droolsexample.model.Tarifa;
+import java.util.*;
+
+global br.droolsexample.model.Tarifa tarifaPasseio;
+dialect "mvel"
+
+rule "Calcular Tarifa de Taxi - Cenario 1"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == false && distanciaKm < 10);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(0);
+       	tarifaPasseio.setTarifaPasseio(70);
+end
+
+rule "Calcular Tarifa de Taxi - Cenario 2"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == true && distanciaKm < 10);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(30);
+       	tarifaPasseio.setTarifaPasseio(70);
+end
+
+rule "Calcular Tarifa de Taxi - Cenario 3"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == false && distanciaKm >= 10 && distanciaKm < 100);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(0);
+       	tarifaPasseio.setTarifaPasseio(70 + (2 * corridaTaxiInstance.getDistanciaKm()));
+end
+
+rule "Calcular Tarifa de Taxi - Cenario 4"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == true && distanciaKm >= 10 && distanciaKm < 100);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(30 + corridaTaxiInstance.getDistanciaKm());
+       	tarifaPasseio.setTarifaPasseio(70 + (2 * corridaTaxiInstance.getDistanciaKm()));
+end
+
+rule "Calcular Tarifa de Taxi - Cenario 5"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == false && distanciaKm >= 100);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(0);
+       	tarifaPasseio.setTarifaPasseio(70 + (1.5 * corridaTaxiInstance.getDistanciaKm()));
+end
+
+rule "Calcular Tarifa de Taxi - Cenario 6"
+    when
+        corridaTaxiInstance:CorridaTaxi(ehSobretaxaNoturna == true && distanciaKm >= 100);
+    then
+       	tarifaPasseio.setSobretaxaNoturna(30 + corridaTaxiInstance.getDistanciaKm());
+       	tarifaPasseio.setTarifaPasseio(70 + (1.5 * corridaTaxiInstance.getDistanciaKm()));
+end
